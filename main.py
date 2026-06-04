@@ -12,8 +12,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if button_rect.collidepoint(event.pos):
+                reset_board()
 
     screen.fill((30, 30, 40))
+    draw_board(screen)
+    button_rect = draw_reset_button(screen) 
     pygame.display.flip()
     clock.tick(60)
 
