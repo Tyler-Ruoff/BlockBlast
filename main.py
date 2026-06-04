@@ -1,5 +1,5 @@
 import pygame
-from board import draw_board 
+from board import draw_board, draw_reset_button, reset_board
 
 pygame.init()
 
