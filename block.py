@@ -30,3 +30,11 @@ class Block:
     def __init__(self, cells, color):
         self.cells = cells
         self.color = color
+
+
+def random_block():
+    return Block(random.choice(SHAPES), random_color())
+
+
+def spawn_blocks():
+    return [random_block() for _ in range(3)]
