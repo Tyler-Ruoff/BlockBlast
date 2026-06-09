@@ -4,8 +4,8 @@ COLS = 8
 ROWS = 8
 CELL_SIZE = 70 
 
-GRID_COLOR = (50, 50, 60) 
-BORDER_COLOR = (100, 100, 120) 
+GRID_COLOR = (255, 255, 255) 
+BORDER_COLOR = (200, 200, 200)
 
 board = [[0] * COLS for _ in range(ROWS)]
 
