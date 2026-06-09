@@ -4,6 +4,7 @@ from board import draw_board, reset_board
 from block import spawn_blocks, random_block
 from drag import draw_preview_blocks, handle_drag, draw_dragging
 from check import check_and_clear
+from score import add_score, reset_score, draw_score, draw_win_screen, is_goal_reached
 
 pygame.init()
 
@@ -115,6 +116,7 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if RESET_RECT.collidepoint(event.pos):
                 reset_board()
+                reset_score()
                 blocks = spawn_blocks()
                 block_positions = tray_positions.copy()
 
@@ -143,21 +145,25 @@ while running:
 
                 if can_place(blocks[dragging_index], grid_row, grid_col):
                     place_block(blocks[dragging_index], grid_row, grid_col)
-                    check_and_clear() 
+                    rows, cols = check_and_clear()
+                    add_score(rows, cols)
                     blocks[dragging_index] = random_block()
 
                 block_positions[dragging_index] = tray_positions[dragging_index]
                 dragging_index = None
 
     screen.fill((30, 30, 40))
-
     draw_board(screen)
     draw_placed_blocks()
+    draw_score(screen, pygame) 
 
     for i, block in enumerate(blocks):
         draw_piece(block, block_positions[i])
 
     draw_reset_button()
+    
+    if is_goal_reached():
+        draw_win_screen(screen, pygame)
 
     pygame.display.flip()
     clock.tick(60)
