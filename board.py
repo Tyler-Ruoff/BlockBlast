@@ -19,8 +19,9 @@ def draw_board(screen):
             pygame.draw.rect(screen, BORDER_COLOR, rect, 2) 
             
 def reset_board():
-    global board
-    board = [[0] * COLS for _ in range(ROWS)] 
+    for row in range(ROWS):
+        for col in range(COLS):
+            board[row][col] = 0
 
 def draw_reset_button(screen):
     font = pygame.font.SysFont(None, 36)
