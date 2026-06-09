@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 GRID_X = 20
 GRID_Y = 20
 CELL_SIZE = 70
-PIECE_CELL = 40
+PIECE_CELL = 42
 
 RESET_RECT = pygame.Rect(220, 760, 160, 45)
 
