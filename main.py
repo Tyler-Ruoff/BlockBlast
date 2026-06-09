@@ -89,8 +89,8 @@ def place_block(block, grid_row, grid_col):
 
 def get_grid_position(pos):
     x, y = pos
-    grid_col = round((x - GRID_X) / CELL_SIZE)
-    grid_row = round((y - GRID_Y) / CELL_SIZE)
+    grid_col = round((x + PIECE_CELL / 2 - GRID_X - CELL_SIZE / 2) / CELL_SIZE)
+    grid_row = round((y + PIECE_CELL / 2 - GRID_Y - CELL_SIZE / 2) / CELL_SIZE)
     return grid_row, grid_col
 
 
