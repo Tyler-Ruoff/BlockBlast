@@ -1,5 +1,5 @@
 score = 0
-goal = 820
+goal = 200
 
 def add_score(rows_cleared, cols_cleared):
     global score
