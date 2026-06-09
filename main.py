@@ -2,7 +2,6 @@ import pygame
 import board as board_module
 from board import draw_board, reset_board
 from block import spawn_blocks, random_block
-from drag import draw_preview_blocks, handle_drag, draw_dragging
 from check import check_and_clear
 from score import add_score, reset_score, draw_score, draw_win_screen, is_goal_reached
 
@@ -19,6 +18,7 @@ CELL_SIZE = 70
 PIECE_CELL = 42
 
 RESET_RECT = pygame.Rect(220, 760, 160, 45)
+UNDO_RECT = pygame.Rect(50, 760, 120, 45)
 
 tray_positions = [
     (70, 610),
@@ -28,6 +28,7 @@ tray_positions = [
 
 blocks = spawn_blocks()
 block_positions = tray_positions.copy()
+undo_stack = []
 
 dragging_index = None
 drag_offset = (0, 0)
@@ -59,33 +60,33 @@ def draw_piece(block, pos):
         pygame.draw.rect(screen, block.color, rect)
         pygame.draw.rect(screen, (40, 40, 50), rect, 2)
 
+
 def get_piece_rect(block, pos):
     rows = [cell[0] for cell in block.cells]
     cols = [cell[1] for cell in block.cells]
-
     width = (max(cols) + 1) * PIECE_CELL
     height = (max(rows) + 1) * PIECE_CELL
-
     return pygame.Rect(pos[0], pos[1], width, height).inflate(30, 30)
+
 
 def can_place(block, grid_row, grid_col):
     for row, col in block.cells:
         new_row = grid_row + row
         new_col = grid_col + col
-
         if new_row < 0 or new_row >= board_module.ROWS:
             return False
         if new_col < 0 or new_col >= board_module.COLS:
             return False
         if board_module.board[new_row][new_col]:
             return False
-
     return True
 
 
 def place_block(block, grid_row, grid_col):
+    undo_stack.append([row[:] for row in board_module.board])
     for row, col in block.cells:
         board_module.board[grid_row + row][grid_col + col] = block.color
+
 
 def get_grid_position(pos):
     x, y = pos
@@ -97,11 +98,38 @@ def get_grid_position(pos):
 def draw_reset_button():
     pygame.draw.rect(screen, (200, 50, 50), RESET_RECT)
     pygame.draw.rect(screen, (255, 120, 120), RESET_RECT, 3)
-
     font = pygame.font.SysFont(None, 40)
     text = font.render("RESET", True, (255, 255, 255))
-    text_rect = text.get_rect(center=RESET_RECT.center)
-    screen.blit(text, text_rect)
+    screen.blit(text, text.get_rect(center=RESET_RECT.center))
+
+
+def draw_undo_button():
+    pygame.draw.rect(screen, (50, 100, 200), UNDO_RECT)
+    pygame.draw.rect(screen, (100, 150, 255), UNDO_RECT, 3)
+    font = pygame.font.SysFont(None, 40)
+    text = font.render("UNDO", True, (255, 255, 255))
+    screen.blit(text, text.get_rect(center=UNDO_RECT.center))
+
+
+def is_game_over():
+    for block in blocks:
+        for r in range(board_module.ROWS):
+            for c in range(board_module.COLS):
+                if can_place(block, r, c):
+                    return False
+    return True
+
+
+def draw_game_over():
+    overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+    screen.blit(overlay, (0, 0))
+    font_big = pygame.font.SysFont(None, 100)
+    font_small = pygame.font.SysFont(None, 48)
+    text = font_big.render("GAME OVER", True, (255, 50, 50))
+    screen.blit(text, text.get_rect(center=(300, 350)))
+    hint = font_small.render("Press RESET to play again", True, (255, 255, 255))
+    screen.blit(hint, hint.get_rect(center=(300, 450)))
 
 
 running = True
@@ -117,6 +145,11 @@ while running:
                 reset_score()
                 blocks = spawn_blocks()
                 block_positions = tray_positions.copy()
+                undo_stack.clear()
+
+            elif UNDO_RECT.collidepoint(event.pos):
+                if undo_stack:
+                    board_module.board = undo_stack.pop()
 
             else:
                 for i in range(len(blocks) - 1, -1, -1):
@@ -153,15 +186,18 @@ while running:
     screen.fill((30, 30, 40))
     draw_board(screen)
     draw_placed_blocks()
-    draw_score(screen, pygame) 
+    draw_score(screen, pygame)
 
     for i, block in enumerate(blocks):
         draw_piece(block, block_positions[i])
 
+    draw_undo_button()
     draw_reset_button()
-    
+
     if is_goal_reached():
         draw_win_screen(screen, pygame)
+    elif is_game_over():
+        draw_game_over()
 
     pygame.display.flip()
     clock.tick(60)
