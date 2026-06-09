@@ -2,6 +2,8 @@ import pygame
 import board as board_module
 from board import draw_board, reset_board
 from block import spawn_blocks, random_block
+from drag import draw_preview_blocks, handle_drag, draw_dragging
+from check import check_and_clear
 
 pygame.init()
 
@@ -86,7 +88,6 @@ def place_block(block, grid_row, grid_col):
     for row, col in block.cells:
         board_module.board[grid_row + row][grid_col + col] = block.color
 
-
 def get_grid_position(pos):
     x, y = pos
     grid_col = round((x - GRID_X) / CELL_SIZE)
@@ -142,6 +143,7 @@ while running:
 
                 if can_place(blocks[dragging_index], grid_row, grid_col):
                     place_block(blocks[dragging_index], grid_row, grid_col)
+                    check_and_clear() 
                     blocks[dragging_index] = random_block()
 
                 block_positions[dragging_index] = tray_positions[dragging_index]
