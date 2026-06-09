@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 GRID_X = 20
 GRID_Y = 20
 CELL_SIZE = 70
-PIECE_CELL = 28
+PIECE_CELL = 40
 
 RESET_RECT = pygame.Rect(220, 760, 160, 45)
 
@@ -59,7 +59,6 @@ def draw_piece(block, pos):
         pygame.draw.rect(screen, block.color, rect)
         pygame.draw.rect(screen, (40, 40, 50), rect, 2)
 
-
 def get_piece_rect(block, pos):
     rows = [cell[0] for cell in block.cells]
     cols = [cell[1] for cell in block.cells]
@@ -67,8 +66,7 @@ def get_piece_rect(block, pos):
     width = (max(cols) + 1) * PIECE_CELL
     height = (max(rows) + 1) * PIECE_CELL
 
-    return pygame.Rect(pos[0], pos[1], width, height)
-
+    return pygame.Rect(pos[0], pos[1], width, height).inflate(30, 30)
 
 def can_place(block, grid_row, grid_col):
     for row, col in block.cells:
