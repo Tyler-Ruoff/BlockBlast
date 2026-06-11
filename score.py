@@ -15,9 +15,9 @@ def is_goal_reached():
 def draw_score(screen, pygame):
     font = pygame.font.SysFont(None, 36)
     score_text = font.render(f"Score: {score}", True, (255, 255, 255))
-    screen.blit(score_text, (120, 780))
+    screen.blit(score_text, (400, 765))
     goal_text = font.render(f"Goal: {goal}", True, (255, 215, 0))
-    screen.blit(goal_text, (400, 780))
+    screen.blit(goal_text, (400, 790))
 
 def draw_win_screen(screen, pygame):
     font_big = pygame.font.SysFont(None, 100)
