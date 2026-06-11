@@ -18,7 +18,7 @@ CELL_SIZE = 70
 PIECE_CELL = 42
 
 RESET_RECT = pygame.Rect(220, 760, 160, 45)
-UNDO_RECT = pygame.Rect(50, 760, 120, 45)
+UNDO_RECT = pygame.Rect(10, 775, 100, 35)
 
 tray_positions = [
     (70, 610),
