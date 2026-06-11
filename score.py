@@ -6,7 +6,9 @@ def add_score(rows_cleared, cols_cleared):
     score += (rows_cleared + cols_cleared) * 100
 
 def reset_score():
-    global score
+    global score, goal
+    if score >= goal:
+        goal *= 2
     score = 0
 
 def is_goal_reached():
